@@ -17,6 +17,8 @@ import           Network.AMQP               (Ack (..), Channel, Connection,
                                              openConnection, rejectEnv)
 import           System.Environment         (getEnv, lookupEnv)
 
+data Status = Success | Failure
+
 data Amqp = Amqp {
     amqpIp       :: String
   , amqpPort     :: Int
@@ -42,7 +44,7 @@ pollQueue
   :: Text
   -> Channel
   -> Int
-  -> (BL.ByteString -> IO Bool)
+  -> (BL.ByteString -> IO Status)
   -> IO ()
 pollQueue q chan delay handler = forever $ do
   threadDelay delay
@@ -50,9 +52,9 @@ pollQueue q chan delay handler = forever $ do
   case maybeMsg of
     Nothing -> return ()
     Just (msg, env) -> do
-      result <- handler $ msgBody msg
-      case result of
-        True  -> ackEnv env
-        False -> rejectEnv env True
+      status <- handler $ msgBody msg
+      case status of
+        Success -> ackEnv env
+        Failure -> rejectEnv env True
 
 
