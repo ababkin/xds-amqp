@@ -1,0 +1,18 @@
+name:                xds-amqp
+version:             0.1.0.0
+description:         Amqp client for xdataset
+license:             AllRightsReserved
+author:              Alex Babkin
+maintainer:          ababkin@gmail.com
+build-type:          Simple
+cabal-version:       >=1.8
+
+library
+  exposed-modules: Xds.Amqp
+  hs-source-dirs: src
+  build-depends:
+      base
+    , text
+    , bytestring
+    , amqp
+
